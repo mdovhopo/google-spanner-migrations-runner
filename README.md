@@ -62,9 +62,9 @@ and just skips already applied migrations.
 
 ### Run migrations
 
-From shell
+From shell, using npx
 ```sh
-spanner-migration-runner --project-id --instance-id=test --database-id=test 
+npx spanner-migration-runner --project-id --instance-id=test --database-id=test 
 ```
 Also cli configuration is available by env variables (automatically loaded from env)
 
