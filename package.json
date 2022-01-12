@@ -19,7 +19,7 @@
   "author": "mdovhopo <dovgopolyy0000@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/git@github.com:mdovhopo/google-spanner-migrations-runner.git"
+    "url": "https://github.com/mdovhopo/google-spanner-migrations-runner.git"
   },
   "license": "MIT",
   "engines": {
