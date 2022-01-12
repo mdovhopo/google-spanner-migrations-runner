@@ -18,11 +18,13 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Lint
-        run: npm run lint:ci
+      - name: Lint Code Base
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
-        run: npm run build
 #     TODO: add CI tests
 #      - name: Test and generate coverage
 #        run: |
