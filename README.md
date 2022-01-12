@@ -50,6 +50,8 @@ Also do not modify already applied migrations (only if you absolutely sure)
 
 Migrations will be applied in the same order as files in directory.
 
+Examples of valid and invalid migrations can be found [here](./test/samples)
+
 ### What happens if I run migration twice?
 
 Engine stores applied migrations in special table (managed automatically)
