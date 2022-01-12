@@ -24,6 +24,10 @@ Algorithm:
 
 ## Usage
 
+### Requirements
+
+To run tool, you need to have nodejs 14+ version installed
+
 ### Create your migrations
 
 To add migrations, just add `*.sql` file with migration to `migrations` directory.

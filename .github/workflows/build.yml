@@ -15,10 +15,11 @@ jobs:
         with:
           node-version: 14
 
+      - name: Build
+        run: npm ci
+
       - name: Lint
-        run: |
-          npm ci
-          npm run lint:ci
+        run: npm run lint:ci
 
 #     TODO: add CI tests
 #      - name: Test and generate coverage
