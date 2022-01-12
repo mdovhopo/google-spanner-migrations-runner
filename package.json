@@ -1,7 +1,7 @@
 {
   "name": "google-spanner-migrations-runner",
   "version": "0.0.0",
-  "description": "Migrations runnner for Google Cloud Spanner Database",
+  "description": "Migrations runner for Google Cloud Spanner Database",
   "keywords": [
     "spanner",
     "sql",
@@ -11,8 +11,8 @@
     "migration",
     "migrations"
   ],
-  "main": "dist/google-spanner-migrations-runner.js",
-  "types": "dist/google-spanner-migrations-runner.d.ts",
+  "main": "dist/core.js",
+  "types": "dist/core.d.ts",
   "files": [
     "dist"
   ],
