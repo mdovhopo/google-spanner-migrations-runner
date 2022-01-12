@@ -64,7 +64,7 @@ and just skips already applied migrations.
 
 From shell, using npx
 ```sh
-npx spanner-migration-runner --project-id --instance-id=test --database-id=test 
+spanner-migration-runner --project-id --instance-id=test --database-id=test 
 ```
 Also cli configuration is available by env variables (automatically loaded from env)
 
