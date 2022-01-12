@@ -17,7 +17,7 @@
     "dist"
   ],
   "bin": {
-    "google-spanner-migration-runner": "./dist/bin/google-spanner-migration-runner"
+    "google-spanner-migrations-runner": "./dist/bin/google-spanner-migrations-runner"
   },
   "author": "mdovhopo <dovgopolyy0000@gmail.com>",
   "repository": {
