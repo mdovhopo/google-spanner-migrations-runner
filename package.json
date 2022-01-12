@@ -16,6 +16,9 @@
   "files": [
     "dist"
   ],
+  "bin": {
+    "uuid": "./dist/bin/uuid"
+  },
   "author": "mdovhopo <dovgopolyy0000@gmail.com>",
   "repository": {
     "type": "git",

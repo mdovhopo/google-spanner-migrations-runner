@@ -1,4 +1,3 @@
 #!/usr/bin/env node
 
-// TODO
-console.log('run bin')
+require('../google-spanner-migrations-runner/dist/cli.js');
