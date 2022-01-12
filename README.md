@@ -86,3 +86,18 @@ run();
 Bootstrapped with: [create-ts-lib-gh](https://github.com/glebbash/create-ts-lib-gh)
 
 This project is [Mit Licensed](LICENSE).
+
+## Contributing
+
+If you want to contribute to this repo, or just run it locally, 
+you can use Spanner emulator:
+
+```shell
+docker compose up -d
+```
+
+and run tool with ts-node using samples:
+
+```shell
+ts-node src/cli.ts -mr test/samples/valid/single
+```
