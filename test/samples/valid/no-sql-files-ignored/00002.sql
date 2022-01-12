@@ -1,0 +1,1 @@
+ALTER TABLE test_2 ADD COLUMN lastName STRING(128);

@@ -1,0 +1,5 @@
+CREATE TABLE test (
+  id              INT64 NOT NULL,
+) PRIMARY KEY (id);
+
+ALTER TABLE test_2 ALTER COLUMN lastName STRING(128);

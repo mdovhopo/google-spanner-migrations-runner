@@ -1,0 +1,75 @@
+{
+  "name": "google-spanner-migrations-runner",
+  "version": "0.0.0",
+  "description": "Migrations runnner for Google Cloud Spanner Database",
+  "keywords": [
+    "spanner",
+    "sql",
+    "google",
+    "google-cloud",
+    "database",
+    "migration",
+    "migrations"
+  ],
+  "main": "dist/google-spanner-migrations-runner.js",
+  "types": "dist/google-spanner-migrations-runner.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "mdovhopo <dovgopolyy0000@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/git@github.com:mdovhopo/google-spanner-migrations-runner.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "scripts": {
+    "lint": "eslint --fix 'src/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "build": "tsc --project tsconfig.build.json",
+    "build:docs": "typedoc --out docs src/",
+    "test": "jest --config jest.config.ts --coverage",
+    "test:prod": "npm run lint && npm run test -- --no-cache"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "eslint --fix"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "dependencies": {
+    "@google-cloud/spanner": "^5.16.1",
+    "colors": "^1.4.0",
+    "commander": "^8.3.0",
+    "dotenv": "^11.0.0",
+    "inquirer": "^8.2.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "14.1.0",
+    "@commitlint/config-conventional": "14.1.0",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^16.11.19",
+    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/parser": "^5.3.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^7.0.4",
+    "jest": "^27.4.7",
+    "jest-config": "^27.4.7",
+    "lint-staged": "^12.1.7",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2",
+    "semantic-release": "^18.0.0",
+    "ts-jest": "^27.1.2",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  }
+}
