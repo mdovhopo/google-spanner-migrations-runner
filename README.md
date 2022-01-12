@@ -1,7 +1,6 @@
 # Google Spanner Migrations Runner
 
-[![Deploy](https://github.com/git@github.com:mdovhopo/google-spanner-migrations-runner.git/workflows/build/badge.svg)](https://github.com/git@github.com:mdovhopo/google-spanner-migrations-runner.git/actions)
-[![Coverage Status](https://coveralls.io/repos/github/git@github.com:mdovhopo/google-spanner-migrations-runner.git/badge.svg?branch=master)](https://coveralls.io/github/git@github.com:mdovhopo/google-spanner-migrations-runner.git?branch=master)
+[![Deploy](https://github.com/mdovhopo/google-spanner-migrations-runner/workflows/build/badge.svg)](https://github.com/mdovhopo/google-spanner-migrations-runner/workflows/build/badge.svg)
 
 ## What it is?
 
