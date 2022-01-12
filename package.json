@@ -17,7 +17,7 @@
     "dist"
   ],
   "bin": {
-    "uuid": "./dist/bin/uuid"
+    "google-spanner-migration-runner": "./dist/bin/google-spanner-migration-runner"
   },
   "author": "mdovhopo <dovgopolyy0000@gmail.com>",
   "repository": {
@@ -33,6 +33,7 @@
     "lint:ci": "eslint 'src/**/*.ts' --max-warnings 0",
     "prebuild": "rimraf dist",
     "build": "tsc --project tsconfig.build.json",
+    "postbuild": "cp -r src/bin dist",
     "test": "jest --config jest.config.ts --coverage",
     "test:prod": "npm run lint && npm run test -- --no-cache"
   },
