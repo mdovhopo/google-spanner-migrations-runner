@@ -81,14 +81,15 @@ export class SpannerMigration {
   }
 
   protected async getMigrations(): Promise<Migration[]> {
-
     logger.log(`Reading all migrations from path ${this.migrationsRoot}`);
 
     const rawMigrations = await loadMigrations(this.migrationsRoot);
     const { success, errors, migrations } = parseMigrations(rawMigrations);
 
     if (!success) {
-      logger.error(`Unable to parse some migrations.\nErrors:\n${errors?.map((err) => `\t${err}`)}`);
+      logger.error(
+        `Unable to parse some migrations.\nErrors:\n${errors?.map((err) => `\t${err}`)}`
+      );
       panic(`See error above`);
     }
 
@@ -167,7 +168,7 @@ export class SpannerMigration {
       }
     } catch (e) {
       const err = e as Error;
-     logger.error(`Caught global error.\nDetails: ${err.message}`);
+      logger.error(`Caught global error.\nDetails: ${err.message}`);
     }
     logger.log(`Migration finished`);
   }

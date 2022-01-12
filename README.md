@@ -5,7 +5,7 @@
 
 ## What it is?
 
-Migrations will take care of automatic schema managing in your
+Toll will take care of automatic schema managing in your
 Spanner database (both Google-managed and emulator). This is basically an
 engine for running migrations. The burden of writing & testing migrations (sql scripts)
 is on you. This engine does not generate schema from your code.
@@ -17,10 +17,10 @@ What it can do:
 ## How it works
 
 Algorithm:
-1. Go though `migrations` directory
-2. Fetch all `*.sql` files
-3. Validate them
-4. Apply them in order, that they are in directory, wrapping in transaction. (so naming matters)
+1. Goes though `migrations` directory
+2. Fetches all `*.sql` files
+3. Validates them
+4. Applies them in order, that they are in directory (in transaction), so naming matters
 
 ## Usage
 
