@@ -13,16 +13,22 @@ jobs:
         with:
           node-version: 14
 
-      - name: Test and generate coverage
+      - name: Lint
         run: |
           npm ci
-          npm run test:prod
+          npm run lint:ci
 
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./.coverage/lcov.info
+#     TODO: add CI tests
+#      - name: Test and generate coverage
+#        run: |
+#          npm ci
+#          npm run test:prod
+#
+#      - name: Coveralls
+#        uses: coverallsapp/github-action@master
+#        with:
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
+#          path-to-lcov: ./.coverage/lcov.info
 
   release:
     name: Release
@@ -44,14 +50,6 @@ jobs:
         run: |
           npm ci
           npm run build
-          npm run build:docs
-
-      - name: Publish docs
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: docs
 
       - name: Release
         env:
