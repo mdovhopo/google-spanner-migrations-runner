@@ -62,9 +62,12 @@ and just skips already applied migrations.
 
 ### Run migrations
 
-From shell, using npx
+From shell
 ```sh
-spanner-migration-runner --project-id --instance-id=test --database-id=test 
+# via npx
+npx google-spanner-migrations-runner --project-id --instance-id=test --database-id=test
+# or install globally
+npm i -g google-spanner-migrations-runner --project-id --instance-id=test --database-id=test
 ```
 Also cli configuration is available by env variables (automatically loaded from env)
 
