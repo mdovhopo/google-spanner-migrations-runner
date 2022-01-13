@@ -35,7 +35,8 @@
     "build": "tsc --project tsconfig.build.json",
     "postbuild": "cp -r src/bin dist",
     "test": "jest --config jest.config.ts --coverage",
-    "test:prod": "npm run lint && npm run test -- --no-cache"
+    "test:prod": "npm run lint && npm run test -- --no-cache",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
