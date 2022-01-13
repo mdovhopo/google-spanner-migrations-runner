@@ -70,10 +70,16 @@ npx google-spanner-migrations-runner --project-id --instance-id=test --database-
 npm i -g google-spanner-migrations-runner --project-id --instance-id=test --database-id=test
 ```
 Also cli configuration is available by env variables (automatically loaded from env)
+*Note:* if you have `.env` file where you run this cli, it will load variables and use them.
+Actual env variables you can check via:
+
+```shell
+npx google-spanner-migrations-runner --help
+```
 
 From code
 ```ts
-import { SpannerMigration } from './core';
+import { SpannerMigration } from 'google-spanner-migrations-runner';
 
 async function run() {
   const config = { /* your config */ };
