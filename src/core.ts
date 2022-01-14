@@ -168,8 +168,8 @@ export class SpannerMigration {
       }
     } catch (e) {
       const err = e as Error;
-      logger.error(`Caught global error.\nDetails: ${err.message}`);
+      logger.error(`Caught global migrations error.\nDetails: ${err.message}`);
+      throw e;
     }
-    logger.log(`Migration finished`);
   }
 }
