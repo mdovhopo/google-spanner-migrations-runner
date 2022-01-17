@@ -84,13 +84,20 @@ export class SpannerMigration {
     logger.log(`Reading all migrations from path ${this.migrationsRoot}`);
 
     const rawMigrations = await loadMigrations(this.migrationsRoot);
+    if (rawMigrations.length === 0) {
+      logger.error(
+        `Could not find any migrations, you probably selected wrong migrations root directory`
+      );
+      throw new Error(`See error above`);
+    }
+
     const { success, errors, migrations } = parseMigrations(rawMigrations);
 
     if (!success) {
       logger.error(
         `Unable to parse some migrations.\nErrors:\n${errors?.map((err) => `\t${err}`)}`
       );
-      panic(`See error above`);
+      throw new Error(`See error above`);
     }
 
     logger.log(`Got ${migrations.length} migration(s)`);
@@ -106,7 +113,7 @@ export class SpannerMigration {
     });
   }
 
-  protected async applyMigration({ id, type, statements }: Migration): Promise<boolean> {
+  protected async applyMigration({ id, type, statements }: Migration): Promise<void> {
     const [applied] = await this.db.run({
       sql: `SELECT id from ${this.migrationsTable} where id = @id and success = true;`,
       params: { id },
@@ -115,7 +122,7 @@ export class SpannerMigration {
 
     if (applied.length !== 0) {
       logger.log(`Migration ${id} is already applied, skipping.`);
-      return true;
+      return;
     }
 
     try {
@@ -136,12 +143,10 @@ export class SpannerMigration {
       }
       logger.log(`Migration ${id} applied`);
       await this.saveMigrationResult(id);
-      return true;
     } catch (e) {
       const err: any = e;
-      logger.error(`Migration ${id} failed.\nDetails: ${err.details}`);
       await this.saveMigrationResult(id, err.details);
-      return false;
+      throw new Error(`Migration ${id} failed.\nDetails: ${err.details}`);
     }
   }
 
@@ -160,15 +165,10 @@ export class SpannerMigration {
       const migrations = await this.getMigrations();
 
       for (const migration of migrations) {
-        const success = await this.applyMigration(migration);
-        if (!success) {
-          logger.error(`Migration failed, stop..`);
-          break;
-        }
+        await this.applyMigration(migration);
       }
     } catch (e) {
-      const err = e as Error;
-      logger.error(`Caught global migrations error.\nDetails: ${err.message}`);
+      logger.error((e as Error).message);
       throw e;
     }
   }
