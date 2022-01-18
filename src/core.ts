@@ -157,8 +157,8 @@ export class SpannerMigration {
       // in real env, instance must be created & configured manually
       if (this.config.isEmulator) {
         await this.getOrCreateInstance();
+        await this.getOrCreateDatabase();
       }
-      await this.getOrCreateDatabase();
 
       await this.prepareMigrationsTable();
 
