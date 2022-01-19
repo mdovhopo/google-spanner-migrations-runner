@@ -1,15 +1,33 @@
 import chalk from 'chalk';
 
-function createLogger() {
+export type LogLevel = 'log' | 'error';
+export type LogColor = 'red' | 'green';
+
+export type Logger = {
+  [key in LogLevel]: (message: string) => void;
+};
+
+export function createLogger(silent = false): Logger {
+  function getColorFromLevel(level: LogLevel): LogColor {
+    return ({ log: 'green', error: 'red' } as Record<LogLevel, LogColor>)[level];
+  }
+
+  function write(level: LogLevel, message: string) {
+    if (silent) {
+      return;
+    }
+
+    const msg = `${new Date().toISOString()} [${level.toUpperCase()}]: ${message}`;
+    console[level](chalk[getColorFromLevel(level)](msg));
+  }
+
   return {
-    error(message: string) {
-      console.error(chalk.red(`${new Date().toISOString()} [ERROR]: ${message}`));
+    error(message) {
+      write('error', message);
     },
 
-    log(message: string) {
-      console.error(chalk.green(`${new Date().toISOString()} [LOG]: ${message}`));
+    log(message) {
+      write('log', message);
     },
   };
 }
-
-export const logger = createLogger();

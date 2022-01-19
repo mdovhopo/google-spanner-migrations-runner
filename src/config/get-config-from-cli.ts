@@ -39,6 +39,7 @@ export function getConfigFromCli(): SpannerMigrationsConfig {
       `name of migrations table that keeps track of migrations status (defaults to env MIGRATIONS_LOG_TABLE or ${MIGRATIONS_LOG_TABLE})`,
       process.env.MIGRATIONS_LOG_TABLE || MIGRATIONS_LOG_TABLE
     )
+    .option('-s, --is-silent', 'If specofied, no logs will be printed to stdout')
     .parse(process.argv);
 
   return prog.opts<SpannerMigrationsConfig>();

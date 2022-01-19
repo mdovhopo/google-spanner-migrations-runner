@@ -1,7 +1,7 @@
 import { Database, Instance, Spanner, Transaction } from '@google-cloud/spanner';
 
 import { MIGRATIONS_LOG_TABLE, MIGRATIONS_ROOT_DIR } from './common/defaults';
-import { logger } from './common/logger';
+import { createLogger, Logger } from './common/logger';
 import { panic } from './common/panic';
 import { loadMigrations } from './loader/load-migrations';
 import { parseMigrations } from './loader/parse-migrations';
@@ -13,6 +13,7 @@ export class SpannerMigration {
   readonly db: Database;
   readonly migrationsTable: string;
   readonly migrationsRoot: string;
+  protected readonly logger: Logger;
 
   constructor(protected readonly config: SpannerMigrationsConfig) {
     this.spanner = new Spanner({ projectId: config.projectId });
@@ -21,44 +22,46 @@ export class SpannerMigration {
 
     this.migrationsTable = config.migrationsTable || MIGRATIONS_LOG_TABLE;
     this.migrationsRoot = config.migrationsRoot || MIGRATIONS_ROOT_DIR;
+
+    this.logger = createLogger(config.isSilent);
   }
 
   protected async getOrCreateInstance(): Promise<void> {
     const id = this.config.instanceId;
-    logger.log(`Checking instance ${id}...`);
+    this.logger.log(`Checking instance ${id}...`);
 
     const [instExists] = await this.spanner.instance(id).exists();
     if (instExists) {
-      logger.log(`instance ${id} exists`);
+      this.logger.log(`instance ${id} exists`);
       return;
     }
 
-    logger.log(`No instance ${id} found`);
+    this.logger.log(`No instance ${id} found`);
     await this.spanner.createInstance(id, { nodes: 1, config: '' });
 
-    logger.log(`Instance ${id} created`);
+    this.logger.log(`Instance ${id} created`);
   }
 
   protected async getOrCreateDatabase(): Promise<void> {
     const id = this.config.databaseId;
-    logger.log(`Checking database ${id}...`);
+    this.logger.log(`Checking database ${id}...`);
 
     const dbRef = this.instance.database(id);
 
     const [dbExists] = await dbRef.exists();
     if (dbExists) {
-      logger.log(`Database ${id} exists`);
+      this.logger.log(`Database ${id} exists`);
       return;
     }
 
-    logger.log(`No database ${id} found`);
+    this.logger.log(`No database ${id} found`);
     await this.instance.createDatabase(id);
 
-    logger.log(`Database ${id} created`);
+    this.logger.log(`Database ${id} created`);
   }
 
   protected async prepareMigrationsTable(): Promise<void> {
-    logger.log('Checking migrations-engine table...');
+    this.logger.log('Checking migrations-engine table...');
 
     const exists = await this.db
       .run(`SELECT * from ${this.migrationsTable} LIMIT 1`)
@@ -66,7 +69,7 @@ export class SpannerMigration {
       .catch((err) => (err.details?.includes('not found') ? false : panic(err)));
 
     if (exists) {
-      logger.log(`Migration table already exists`);
+      this.logger.log(`Migration table already exists`);
       return;
     }
 
@@ -77,15 +80,15 @@ export class SpannerMigration {
         appliedAt   TIMESTAMP NOT NULL,
         error       STRING(4096),
       ) PRIMARY KEY (id)`);
-    logger.log(`Migration table was created`);
+    this.logger.log(`Migration table was created`);
   }
 
   protected async getMigrations(): Promise<Migration[]> {
-    logger.log(`Reading all migrations from path ${this.migrationsRoot}`);
+    this.logger.log(`Reading all migrations from path ${this.migrationsRoot}`);
 
     const rawMigrations = await loadMigrations(this.migrationsRoot);
     if (rawMigrations.length === 0) {
-      logger.error(
+      this.logger.error(
         `Could not find any migrations, you probably selected wrong migrations root directory`
       );
       throw new Error(`See error above`);
@@ -94,13 +97,13 @@ export class SpannerMigration {
     const { success, errors, migrations } = parseMigrations(rawMigrations);
 
     if (!success) {
-      logger.error(
+      this.logger.error(
         `Unable to parse some migrations.\nErrors:\n${errors?.map((err) => `\t${err}`)}`
       );
       throw new Error(`See error above`);
     }
 
-    logger.log(`Got ${migrations.length} migration(s)`);
+    this.logger.log(`Got ${migrations.length} migration(s)`);
     return migrations;
   }
 
@@ -121,12 +124,12 @@ export class SpannerMigration {
     });
 
     if (applied.length !== 0) {
-      logger.log(`Migration ${id} is already applied, skipping.`);
+      this.logger.log(`Migration ${id} is already applied, skipping.`);
       return;
     }
 
     try {
-      logger.log(`Applying ${id} migration...`);
+      this.logger.log(`Applying ${id} migration...`);
 
       if (type === 'update-schema') {
         await this.db.updateSchema({ statements });
@@ -141,7 +144,7 @@ export class SpannerMigration {
 
         await this.db.runTransactionAsync(transaction);
       }
-      logger.log(`Migration ${id} applied`);
+      this.logger.log(`Migration ${id} applied`);
       await this.saveMigrationResult(id);
     } catch (e) {
       const err: any = e;
@@ -151,7 +154,7 @@ export class SpannerMigration {
   }
 
   async runMigrations() {
-    logger.log(`Migration started on path ${process.cwd()}`);
+    this.logger.log(`Migration started on path ${process.cwd()}`);
     try {
       // check instance only on emulator
       // in real env, instance must be created & configured manually
@@ -168,7 +171,7 @@ export class SpannerMigration {
         await this.applyMigration(migration);
       }
     } catch (e) {
-      logger.error((e as Error).message);
+      this.logger.error((e as Error).message);
       throw e;
     }
   }

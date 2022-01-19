@@ -44,4 +44,6 @@ export type SpannerMigrationsConfig = {
   isEmulator?: boolean;
 
   projectId?: string;
+
+  isSilent?: true;
 };
