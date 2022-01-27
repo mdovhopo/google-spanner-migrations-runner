@@ -2,9 +2,9 @@
 
 [![Deploy](https://github.com/mdovhopo/google-spanner-migrations-runner/workflows/build/badge.svg)](https://github.com/mdovhopo/google-spanner-migrations-runner/workflows/build/badge.svg)
 
-## What it is?
+## What is this?
 
-Toll will take care of automatic schema managing in your
+This tool will take care of automatic schema managing in your
 Spanner database (both Google-managed and emulator). This is basically an
 engine for running migrations. The burden of writing & testing migrations (sql scripts)
 is on you. This engine does not generate schema from your code.
