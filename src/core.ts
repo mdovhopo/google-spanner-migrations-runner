@@ -155,6 +155,7 @@ export class SpannerMigration {
 
   async runMigrations() {
     this.logger.log(`Migration started on path ${process.cwd()}`);
+    this.logger.log(`Config: ${JSON.stringify(this.config)}`);
     try {
       // check instance only on emulator
       // in real env, instance must be created & configured manually
