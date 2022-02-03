@@ -149,7 +149,11 @@ export class SpannerMigration {
     } catch (e) {
       const err: any = e;
       await this.saveMigrationResult(id, err.details);
-      throw new Error(`Migration ${id} failed.\nDetails: ${err.details}`);
+      if (!config.isEmulator) {
+        throw new Error(`Migration ${id} failed.\nDetails: ${err.details}`);
+      } else {
+        this.logger.warn(`Migration ${id} failed (ignored in emulator).\nDetails: ${err.details}`);
+      }
     }
   }
 
