@@ -30,7 +30,7 @@ function isStatementSupportedByEmulator(statement: string): boolean {
     (statement) => /^alter table [a-z][\d\w_]{0,128} add row deletion policy .+$/i.test(statement),
   ];
 
-  return notSupportedPatterns.every((fn) => fn(statement));
+  return !notSupportedPatterns.some((fn) => fn(statement));
 }
 
 function migrationToStatements(raw: string): Statement[] {
