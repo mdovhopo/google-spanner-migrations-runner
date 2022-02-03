@@ -91,6 +91,14 @@ async function run() {
 run();
 ```
 
+## Emulator limitations
+
+Some features are not available on emulator, so runner will ignore &
+log ignored statements on emulator.
+
+Features ignored:
+- adding row deletion policy
+
 ## Contributing
 
 If you want to contribute to this repo, or just run it locally, 

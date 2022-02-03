@@ -1,7 +1,7 @@
-export const STATEMENT_TYPES = ['update-schema', 'data-manipulation'] as const;
+export const STATEMENT_TYPES = ['DDL', 'DML'] as const;
 export type StatementType = typeof STATEMENT_TYPES[number];
 
-export type Statement = string;
+export type Statement = { disabledInEmulator?: boolean; str: string };
 
 export type RawMigration = {
   file: string;
