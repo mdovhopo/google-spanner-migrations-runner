@@ -3,16 +3,17 @@ import {
   ParseResult,
   ParseTotalResult,
   RawMigration,
+  Statement,
   STATEMENT_TYPES,
   StatementType,
 } from '../types/types';
 
-function getStatementType(stm: string): StatementType {
-  if (/^(CREATE TABLE|ALTER TABLE|CREATE INDEX)/i.test(stm)) {
-    return 'update-schema';
+function getStatementType(stm: Statement): StatementType {
+  if (/^(CREATE TABLE|ALTER TABLE|CREATE INDEX)/i.test(stm.str)) {
+    return 'DDL';
   }
 
-  return 'data-manipulation';
+  return 'DML';
 }
 
 const fileRegex = /^[0-9]{5}[a-z\-]{0,256}\.sql$/;
@@ -24,7 +25,15 @@ function validateFileName(name: string): void {
   }
 }
 
-function migrationToStatements(raw: string): string[] {
+function isStatementSupportedByEmulator(statement: string): boolean {
+  const notSupportedPatterns: ((statement: string) => boolean)[] = [
+    (statement) => /^alter table [a-z][\d\w_]{0,128} add row deletion policy .+$/i.test(statement),
+  ];
+
+  return notSupportedPatterns.every((fn) => fn(statement));
+}
+
+function migrationToStatements(raw: string): Statement[] {
   const statements = raw
     .trim()
     // store each SQL statement as separate string
@@ -36,10 +45,13 @@ function migrationToStatements(raw: string): string[] {
     panic(`Migration file must specify at least one statement`);
   }
 
-  return statements;
+  return statements.map((str) => ({
+    str,
+    disabledInEmulator: !isStatementSupportedByEmulator(str),
+  }));
 }
 
-function assertStatementsType(statements: string[]): void {
+function assertStatementsType(statements: Statement[]): void {
   const type = getStatementType(statements[0]);
   if (statements.some((stm) => getStatementType(stm) !== type)) {
     panic(
@@ -69,7 +81,7 @@ function parseMigration({ file, raw }: RawMigration): ParseResult {
   } catch (e) {
     const err = e as Error;
     return {
-      migration: { id: migrationId, type: 'data-manipulation', statements: [] },
+      migration: { id: migrationId, type: 'DML', statements: [] },
       success: false,
       error: `${file}: ${err.message}`,
     };

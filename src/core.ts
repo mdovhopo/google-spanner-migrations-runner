@@ -26,7 +26,7 @@ export class SpannerMigration {
     this.logger = createLogger(config.isSilent);
   }
 
-  protected async getOrCreateInstance(): Promise<void> {
+  protected async ensureInstance(): Promise<void> {
     const id = this.config.instanceId;
     this.logger.log(`Checking instance ${id}...`);
 
@@ -42,7 +42,7 @@ export class SpannerMigration {
     this.logger.log(`Instance ${id} created`);
   }
 
-  protected async getOrCreateDatabase(): Promise<void> {
+  protected async ensureDatabase(): Promise<void> {
     const id = this.config.databaseId;
     this.logger.log(`Checking database ${id}...`);
 
@@ -131,18 +131,26 @@ export class SpannerMigration {
     try {
       this.logger.log(`Applying ${id} migration...`);
 
-      if (type === 'update-schema') {
-        await this.db.updateSchema({ statements });
+      if (type === 'DDL') {
+        const allowedStatements = this.config.isEmulator
+          ? /* on emulator some of the statements are not supported, so we need to ignore them... */
+            statements.filter(({ str, disabledInEmulator }) =>
+              disabledInEmulator
+                ? console.log(
+                    `Migration ${id} statement [${str}]: not supported on emulator. ignored.`
+                  )
+                : true
+            )
+          : /* in cloud, run all statements */ statements;
+        await this.db.updateSchema({ statements: allowedStatements.map(({ str }) => str) });
       }
-      if (type === 'data-manipulation') {
-        const transaction = async (t: Transaction) => {
-          for (const statement of statements) {
-            await t.run(statement);
+      if (type === 'DML') {
+        await this.db.runTransactionAsync(async (t: Transaction) => {
+          for (const { str } of statements) {
+            await t.run(str);
           }
           await t.commit();
-        };
-
-        await this.db.runTransactionAsync(transaction);
+        });
       }
       this.logger.log(`Migration ${id} applied`);
       await this.saveMigrationResult(id);
@@ -160,8 +168,8 @@ export class SpannerMigration {
       // check instance only on emulator
       // in real env, instance must be created & configured manually
       if (this.config.isEmulator) {
-        await this.getOrCreateInstance();
-        await this.getOrCreateDatabase();
+        await this.ensureInstance();
+        await this.ensureDatabase();
       }
 
       await this.prepareMigrationsTable();
