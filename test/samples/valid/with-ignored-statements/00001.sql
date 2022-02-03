@@ -3,4 +3,4 @@ CREATE TABLE test (
   createdAt       TIMESTAMP NOT NULL,
 ) PRIMARY KEY (id);
 
-alter table events add row deletion policy (older_than(createdAt, interval 30 day));
+alter table test add row deletion policy (older_than(createdAt, interval 30 day));
