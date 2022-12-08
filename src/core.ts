@@ -14,11 +14,15 @@ export class SpannerMigration {
   readonly migrationsTable: string;
   readonly migrationsRoot: string;
   protected readonly logger: Logger;
+  readonly isEmulator: boolean;
 
   constructor(protected readonly config: SpannerMigrationsConfig) {
     this.spanner = new Spanner({ projectId: config.projectId });
     this.instance = this.spanner.instance(config.instanceId);
     this.db = this.instance.database(config.databaseId);
+
+    this.isEmulator =
+      config.isEmulator === undefined ? !!process.env.SPANNER_EMULATOR_HOST : config.isEmulator;
 
     this.migrationsTable = config.migrationsTable || MIGRATIONS_LOG_TABLE;
     this.migrationsRoot = config.migrationsRoot || MIGRATIONS_ROOT_DIR;
