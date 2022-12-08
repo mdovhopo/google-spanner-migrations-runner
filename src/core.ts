@@ -136,7 +136,7 @@ export class SpannerMigration {
       this.logger.log(`Applying ${id} migration...`);
 
       if (type === 'DDL') {
-        const allowedStatements = this.config.isEmulator
+        const allowedStatements = this.isEmulator
           ? /* on emulator some of the statements are not supported, so we need to ignore them... */
             statements.filter(({ str, disabledInEmulator }) =>
               disabledInEmulator
@@ -179,7 +179,7 @@ export class SpannerMigration {
     try {
       // check instance only on emulator
       // in real env, instance must be created & configured manually
-      if (this.config.isEmulator) {
+      if (this.isEmulator) {
         await this.ensureInstance();
         await this.ensureDatabase();
       }
