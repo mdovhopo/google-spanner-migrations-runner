@@ -35,13 +35,17 @@ function isStatementSupportedByEmulator(statement: string): boolean {
 
 function migrationToStatements(raw: string): Statement[] {
   const statements = raw
+    // clear comments first
     .trim()
+    .split('\n')
+    .filter((row) => !row.trim().startsWith('--'))
+    .join('\n')
     // store each SQL statement as separate string
     .split(';')
     .map((str) => str.trim())
     .filter((str) => !!str);
 
-  if (statements.length < 0) {
+  if (statements.length < 1) {
     panic(`Migration file must specify at least one statement`);
   }
 
@@ -83,7 +87,7 @@ function parseMigration({ file, raw }: RawMigration): ParseResult {
     return {
       migration: { id: migrationId, type: 'DML', statements: [] },
       success: false,
-      error: `${file}: ${err.message}`,
+      error: `${file}: ${err.stack}`,
     };
   }
 }

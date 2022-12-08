@@ -140,17 +140,25 @@ export class SpannerMigration {
           ? /* on emulator some of the statements are not supported, so we need to ignore them... */
             statements.filter(({ str, disabledInEmulator }) =>
               disabledInEmulator
-                ? console.log(
+                ? this.logger.warn(
                     `Migration ${id} statement [${str}]: not supported on emulator. ignored.`
                   )
                 : true
             )
           : /* in cloud, run all statements */ statements;
-        await this.db.updateSchema({ statements: allowedStatements.map(({ str }) => str) });
+        if (allowedStatements.length > 0) {
+          allowedStatements.forEach(({ str }) => {
+            this.logger.log(`Applying DDL statement [${str}]`);
+          });
+          await this.db.updateSchema({ statements: allowedStatements.map(({ str }) => str) });
+        } else {
+          this.logger.warn(`0 statements found in migration ${id}, skipping.`);
+        }
       }
       if (type === 'DML') {
         await this.db.runTransactionAsync(async (t: Transaction) => {
           for (const { str } of statements) {
+            this.logger.log(`Applying DML statement [${str}]`);
             await t.run(str);
           }
           await t.commit();

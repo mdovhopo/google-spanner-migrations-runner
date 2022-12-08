@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
-export type LogLevel = 'log' | 'error';
-export type LogColor = 'red' | 'green';
+export type LogLevel = 'log' | 'error' | 'warn';
+export type LogColor = 'red' | 'green' | 'yellow';
 
 export type Logger = {
   [key in LogLevel]: (message: string) => void;
@@ -9,7 +9,7 @@ export type Logger = {
 
 export function createLogger(silent = false): Logger {
   function getColorFromLevel(level: LogLevel): LogColor {
-    return ({ log: 'green', error: 'red' } as Record<LogLevel, LogColor>)[level];
+    return ({ log: 'green', error: 'red', warn: 'yellow' } as Record<LogLevel, LogColor>)[level];
   }
 
   function write(level: LogLevel, message: string) {
@@ -24,6 +24,10 @@ export function createLogger(silent = false): Logger {
   return {
     error(message) {
       write('error', message);
+    },
+
+    warn(message) {
+      write('log', message);
     },
 
     log(message) {
