@@ -9,7 +9,11 @@ import {
 } from '../types/types';
 
 function getStatementType(stm: Statement): StatementType {
-  if (/^(CREATE TABLE|ALTER TABLE|DROP TABLE|CREATE INDEX|ALTER INDEX|DROP INDEX|CREATE VIEW|CREATE OR REPLACE VIEW|CREATE ROLE|DROP ROLE|GRANT|REVOKE)/i.test(stm.str)) {
+  if (
+    /^(CREATE TABLE|ALTER TABLE|DROP TABLE|CREATE INDEX|ALTER INDEX|DROP INDEX|CREATE VIEW|CREATE OR REPLACE VIEW|CREATE ROLE|DROP ROLE|GRANT|REVOKE)/i.test(
+      stm.str
+    )
+  ) {
     return 'DDL';
   }
 
