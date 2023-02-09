@@ -66,8 +66,10 @@ From shell
 ```sh
 # via npx
 npx google-spanner-migrations-runner --project-id --instance-id=test --database-id=test
+
 # or install globally
-npm i -g google-spanner-migrations-runner --project-id --instance-id=test --database-id=test
+npm i -g google-spanner-migrations-runner
+google-spanner-migrations-runner --project-id --instance-id=test --database-id=test
 ```
 Also cli configuration is available by env variables (automatically loaded from env)
 *Note:* if you have `.env` file where you run this cli, it will load variables and use them.
