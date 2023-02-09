@@ -10,12 +10,14 @@ engine for running migrations. The burden of writing & testing migrations (sql s
 is on you. This engine does not generate schema from your code.
 
 What it can do:
+
 - run your migrations (from .sql files)
 - keep track of migrations, to not reapply already processed.
 
 ## How it works
 
 Algorithm:
+
 1. Goes though `migrations` directory
 2. Fetches all `*.sql` files
 3. Validates them
@@ -42,8 +44,9 @@ CREATE TABLE test (
 ALTER TABLE test ADD COLUMN newcol BYTES(100);
 ```
 
-*IMPORTANT* each migration MUST include only one type of statements.
+_IMPORTANT_ each migration MUST include only one type of statements.
 Available types:
+
 - Create/modify tables
 - Other SQL queries
 
@@ -63,6 +66,7 @@ and just skips already applied migrations.
 ### Run migrations
 
 From shell
+
 ```sh
 # via npx
 npx google-spanner-migrations-runner --project-id --instance-id=test --database-id=test
@@ -71,8 +75,9 @@ npx google-spanner-migrations-runner --project-id --instance-id=test --database-
 npm i -g google-spanner-migrations-runner
 google-spanner-migrations-runner --project-id --instance-id=test --database-id=test
 ```
+
 Also cli configuration is available by env variables (automatically loaded from env)
-*Note:* if you have `.env` file where you run this cli, it will load variables and use them.
+_Note:_ if you have `.env` file where you run this cli, it will load variables and use them.
 Actual env variables you can check via:
 
 ```shell
@@ -80,11 +85,14 @@ npx google-spanner-migrations-runner --help
 ```
 
 From code
+
 ```ts
 import { SpannerMigration } from 'google-spanner-migrations-runner';
 
 async function run() {
-  const config = { /* your config */ };
+  const config = {
+    /* your config */
+  };
   const runner = new SpannerMigration(config);
 
   await runner.runMigrations();
@@ -99,11 +107,15 @@ Some features are not available on emulator, so runner will ignore &
 log ignored statements on emulator.
 
 Features ignored:
+
 - adding row deletion policy
+- creating, replacing or dropping views
+- creating and dropping roles
+- granting or revoking permissions to existing roles
 
 ## Contributing
 
-If you want to contribute to this repo, or just run it locally, 
+If you want to contribute to this repo, or just run it locally,
 you can use Spanner emulator:
 
 ```shell
