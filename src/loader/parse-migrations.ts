@@ -31,7 +31,10 @@ function validateFileName(name: string): void {
 
 function isStatementSupportedByEmulator(statement: string): boolean {
   const notSupportedPatterns: ((statement: string) => boolean)[] = [
-    (statement) => /^alter table [a-z][\d\w_]{0,128} add row deletion policy .+$/i.test(statement),
+    (statement) =>
+      /^(alter table [a-z][\d\w_]{0,128} add row deletion policy .+$|create view |create or replace view|drop view)/i.test(
+        statement
+      ),
   ];
 
   return !notSupportedPatterns.some((fn) => fn(statement));
