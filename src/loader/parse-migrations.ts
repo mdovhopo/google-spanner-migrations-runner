@@ -10,7 +10,7 @@ import {
 
 function getStatementType(stm: Statement): StatementType {
   if (
-    /^(CREATE TABLE|ALTER TABLE|DROP TABLE|CREATE INDEX|ALTER INDEX|DROP INDEX|CREATE VIEW|CREATE OR REPLACE VIEW|CREATE ROLE|DROP ROLE|GRANT|REVOKE)/i.test(
+    /^(CREATE TABLE|ALTER TABLE|DROP TABLE|CREATE INDEX|ALTER INDEX|DROP INDEX|CREATE VIEW|CREATE OR REPLACE VIEW|DROP VIEW|CREATE ROLE|DROP ROLE|GRANT|REVOKE)/i.test(
       stm.str
     )
   ) {
@@ -31,7 +31,10 @@ function validateFileName(name: string): void {
 
 function isStatementSupportedByEmulator(statement: string): boolean {
   const notSupportedPatterns: ((statement: string) => boolean)[] = [
-    (statement) => /^alter table [a-z][\d\w_]{0,128} add row deletion policy .+$/i.test(statement),
+    (statement) =>
+      /^(alter table [a-z][\d\w_]{0,128} add row deletion policy .+$|create view|create or replace view|drop view|create role|drop role|grant|revoke)/i.test(
+        statement
+      ),
   ];
 
   return !notSupportedPatterns.some((fn) => fn(statement));
