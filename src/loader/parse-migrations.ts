@@ -1,4 +1,3 @@
-import { panic } from '../common/panic';
 import {
   ParseResult,
   ParseTotalResult,
@@ -23,7 +22,7 @@ function getStatementType(stm: Statement): StatementType {
 const fileRegex = /^[0-9]{5}[a-z\-]{0,256}\.sql$/;
 function validateFileName(name: string): void {
   if (!fileRegex.test(name)) {
-    panic(
+    throw new Error(
       `Migration file name must follow regex: ${fileRegex.toString()}. Examples: 00001-init.sql, 00004.sql`
     );
   }
@@ -53,7 +52,7 @@ function migrationToStatements(raw: string): Statement[] {
     .filter((str) => !!str);
 
   if (statements.length < 1) {
-    panic(`Migration file must specify at least one statement`);
+    throw new Error(`Migration file must specify at least one statement`);
   }
 
   return statements.map((str) => ({
@@ -65,7 +64,7 @@ function migrationToStatements(raw: string): Statement[] {
 function assertStatementsType(statements: Statement[]): void {
   const type = getStatementType(statements[0]);
   if (statements.some((stm) => getStatementType(stm) !== type)) {
-    panic(
+    throw new Error(
       `Single migration allows only one type of statements due to spanner SDK limitations. Available types - ${STATEMENT_TYPES}`
     );
   }

@@ -2,7 +2,6 @@ import { Database, Instance, Spanner, Transaction } from '@google-cloud/spanner'
 
 import { MIGRATIONS_LOG_TABLE, MIGRATIONS_ROOT_DIR } from './common/defaults';
 import { createLogger, Logger } from './common/logger';
-import { panic } from './common/panic';
 import { loadMigrations } from './loader/load-migrations';
 import { parseMigrations } from './loader/parse-migrations';
 import { Migration, SpannerMigrationsConfig } from './types/types';
@@ -67,24 +66,21 @@ export class SpannerMigration {
   protected async prepareMigrationsTable(): Promise<void> {
     this.logger.log('Checking migrations-engine table...');
 
-    const exists = await this.db
-      .run(`SELECT * from ${this.migrationsTable} LIMIT 1`)
-      .then(() => true)
-      .catch((err) => (err.details?.includes('not found') ? false : panic(err)));
-
-    if (exists) {
-      this.logger.log(`Migration table already exists`);
-      return;
-    }
-
-    await this.db.createTable(`
-      CREATE TABLE ${this.migrationsTable} (
-        id          STRING(64) NOT NULL,
-        success     BOOL NOT NULL,
-        appliedAt   TIMESTAMP NOT NULL,
-        error       STRING(4096),
-      ) PRIMARY KEY (id)`);
-    this.logger.log(`Migration table was created`);
+    await this.db
+      .createTable(
+        `
+        CREATE TABLE ${this.migrationsTable} (
+          id          STRING(64) NOT NULL,
+          success     BOOL NOT NULL,
+          appliedAt   TIMESTAMP NOT NULL,
+          error       STRING(4096),
+        ) PRIMARY KEY (id)`
+      )
+      .then(() => this.logger.log('Migration table was created'))
+      .catch((err) => {
+        if (err.code !== 9) throw err;
+        this.logger.log('Migration table already exists');
+      });
   }
 
   protected async getMigrations(): Promise<Migration[]> {
