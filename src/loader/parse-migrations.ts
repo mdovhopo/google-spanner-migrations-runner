@@ -7,16 +7,55 @@ import {
   StatementType,
 } from '../types/types';
 
-function getStatementType(stm: Statement): StatementType {
-  if (
-    /^(CREATE TABLE|ALTER TABLE|DROP TABLE|CREATE INDEX|ALTER INDEX|DROP INDEX|CREATE VIEW|CREATE OR REPLACE VIEW|DROP VIEW|CREATE ROLE|DROP ROLE|GRANT|REVOKE)/i.test(
-      stm.str
-    )
-  ) {
-    return 'DDL';
-  }
+// https://cloud.google.com/spanner/docs/reference/standard-sql/data-definition-language
+const ddlStatementsPatterns: RegExp[] = [
+  // database statements
+  /^create\s+database/i,
+  /^alter\s+database/i,
 
-  return 'DML';
+  // table statements
+  // CREATE TABLE [ IF NOT EXISTS ] table_name
+  /^create\s{1,}(?:if\s+not\s+exists\s+)?\s{0,}table/i,
+  /^alter\s+table/i,
+  /^drop\s+table/i,
+
+  // index statements
+  // CREATE [ UNIQUE ] [ NULL_FILTERED ] INDEX [ IF NOT EXISTS ] index_name
+  /^create\s{1,}(?:unique\s+|null_filtered\s+)?\s{0,}index/i,
+  /^alter\s+index/i,
+  /^drop\s+index/i,
+
+  // view statements
+  /^create\s+view/i,
+  /^create\s+or\s+replace\s+view/i,
+  /^drop\s+view/i,
+
+  // change stream statements
+  /^create\s+change\s+stream/i,
+  /^alter\s+change\s+stream/i,
+  /^drop\s+change\s+stream/i,
+
+  // role statements
+  /^create\s+role/i,
+  /^drop\s+role/i,
+
+  // grant statements
+  /^grant/i,
+  /^revoke/i,
+
+  // statistics statements
+  /^alter\s+statistics/i,
+  /^analyze/i,
+
+  // ml models
+  /^create\s+model/i,
+  /^create\s+or\s+replace\s+model/i,
+  /^create\s+model\s+if\s+not\s+exists/i,
+  /^alter\s+(?:if\s+exists\s+)?model/i,
+];
+
+function getStatementType(stm: Statement): StatementType {
+  return ddlStatementsPatterns.some((regex) => regex.test(stm.str)) ? 'DDL' : 'DML';
 }
 
 const fileRegex = /^[0-9]{5}[a-z\-]{0,256}\.sql$/;
@@ -29,14 +68,18 @@ function validateFileName(name: string): void {
 }
 
 function isStatementSupportedByEmulator(statement: string): boolean {
-  const notSupportedPatterns: ((statement: string) => boolean)[] = [
-    (statement) =>
-      /^(alter table [a-z][\d\w_]{0,128} add row deletion policy .+$|create view|create or replace view|drop view|create role|drop role|grant|revoke)/i.test(
-        statement
-      ),
+  const notSupportedPatterns: RegExp[] = [
+    /^alter table [a-z][\d\w_]{0,128} add row deletion policy .+$/i,
+    /^create view/i,
+    /^create or replace view/i,
+    /^drop view/i,
+    /^create role/i,
+    /^drop role/i,
+    /^grant/i,
+    /^revoke/i,
   ];
 
-  return !notSupportedPatterns.some((fn) => fn(statement));
+  return !notSupportedPatterns.some((regexp) => regexp.test(statement));
 }
 
 function migrationToStatements(raw: string): Statement[] {
