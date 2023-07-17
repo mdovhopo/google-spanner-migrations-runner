@@ -86,7 +86,7 @@ export class SpannerMigration {
   protected async getMigrations(): Promise<Migration[]> {
     this.logger.log(`Reading all migrations from path ${this.migrationsRoot}`);
 
-    const rawMigrations = await loadMigrations(this.migrationsRoot);
+    const rawMigrations = loadMigrations(this.migrationsRoot);
     if (rawMigrations.length === 0) {
       this.logger.error(
         `Could not find any migrations, you probably selected wrong migrations root directory`

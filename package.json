@@ -69,6 +69,7 @@
     "jest": "^27.4.7",
     "jest-config": "^27.4.7",
     "lint-staged": "^12.1.7",
+    "multiline-str": "^1.0.4",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "semantic-release": "^19.0.2",
