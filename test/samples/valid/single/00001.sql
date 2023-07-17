@@ -1,13 +1,13 @@
-CREATE TABLE dlqTopics (
+CREATE TABLE test (
   id              INT64 NOT NULL,
-  projectId       STRING(256),
-  sourceTopicId   STRING(256),
+  name            STRING(256),
+  last_name       STRING(256),
 ) PRIMARY KEY (id);
 
-CREATE TABLE dlqMessages (
+CREATE TABLE test_2 (
   id              INT64 NOT NULL,
-  messageId       INT64 NOT NULL,
-  dlqTopicId      STRING(256),
-  body            STRING(128),
-  attributes      JSON,
+  name            INT64 NOT NULL,
+  last_name       STRING(256),
+  first_name      STRING(128),
+  metadata        JSON,
 ) PRIMARY KEY (id);

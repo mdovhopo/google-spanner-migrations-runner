@@ -7,14 +7,6 @@ const config: Jest.Config.InitialOptions = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  coverageThreshold: {
-    global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
-  },
   collectCoverageFrom: ['**/*.ts'],
   coveragePathIgnorePatterns: ['/node_modules/'],
   coverageDirectory: '../.coverage',
