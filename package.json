@@ -34,7 +34,7 @@
     "prebuild": "rimraf dist",
     "build": "tsc --project tsconfig.build.json",
     "postbuild": "cp -r src/bin dist",
-    "test:e2e": "node -r ts-node/register  --env-file=.env  --test test/e2e/*.test.ts",
+    "test": "node -r ts-node/register  --env-file=.env  --test test/**/*.test.ts",
     "prepare": "husky install"
   },
   "lint-staged": {
