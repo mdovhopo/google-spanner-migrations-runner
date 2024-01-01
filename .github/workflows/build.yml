@@ -21,11 +21,11 @@ jobs:
       - name: Lint
         run: npm run lint:ci
 
+      - name: Start Spanner Emulator
+        run: docker compose up -d
+
       - name: Test
-        run: |
-          npm ci
-          docker compose up -d
-          npm t
+        run: npm t
 #
 #      - name: Coveralls
 #        uses: coverallsapp/github-action@master

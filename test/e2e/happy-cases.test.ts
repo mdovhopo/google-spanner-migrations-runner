@@ -10,7 +10,7 @@ const testCasesRoot = 'test/samples/valid';
 describe('happy cases', async () => {
   const cases = fs.readdirSync(testCasesRoot);
   const spanner = new Spanner({
-    projectId: process.env.SPANNER_PROJECT_ID!,
+    projectId: process.env.SERVICE_PROJECT_ID!,
   });
 
   for (const testCase of cases) {
@@ -20,7 +20,7 @@ describe('happy cases', async () => {
       const runner = new SpannerMigration({
         isEmulator: true,
         isSilent: true,
-        projectId: process.env.SPANNER_PROJECT_ID!,
+        projectId: process.env.SERVICE_PROJECT_ID!,
         instanceId: process.env.SPANNER_INSTANCE_ID!,
         databaseId: testCase,
         migrationsRoot: `${testCasesRoot}/${testCase}`,
