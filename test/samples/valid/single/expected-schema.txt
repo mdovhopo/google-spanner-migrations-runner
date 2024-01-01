@@ -1,0 +1,18 @@
+CREATE TABLE migrations_log (
+  id STRING(64) NOT NULL,
+  success BOOL NOT NULL,
+  appliedAt TIMESTAMP NOT NULL,
+  error STRING(4096),
+) PRIMARY KEY(id)
+CREATE TABLE test (
+  id INT64 NOT NULL,
+  name STRING(256),
+  last_name STRING(256),
+) PRIMARY KEY(id)
+CREATE TABLE test_2 (
+  id INT64 NOT NULL,
+  name INT64 NOT NULL,
+  last_name STRING(256),
+  first_name STRING(128),
+  metadata JSON,
+) PRIMARY KEY(id)
