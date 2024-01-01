@@ -1,5 +1,5 @@
 name: build
-on: ["push", "pull_request"]
+on: ["push"]
 
 jobs:
   test:
@@ -10,10 +10,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 14
+      - name: Use Node.js 20
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 20
 
       - name: Install
         run: npm ci
@@ -21,10 +21,11 @@ jobs:
       - name: Lint
         run: npm run lint:ci
 
+      - name: Start Spanner Emulator
+        run: docker compose up -d
+
       - name: Test
-        run: |
-          npm ci
-          npm run test
+        run: npm t
 #
 #      - name: Coveralls
 #        uses: coverallsapp/github-action@master
@@ -43,10 +44,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 14
+      - name: Use Node.js 20
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 20
 
       - name: Install dependencies
         run: |

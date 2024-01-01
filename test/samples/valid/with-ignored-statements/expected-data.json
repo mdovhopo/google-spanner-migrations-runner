@@ -1,0 +1,15 @@
+{
+  "migrations_log": [
+    {
+      "id": "00002",
+      "success": true,
+      "error": null
+    },
+    {
+      "id": "00001",
+      "success": true,
+      "error": null
+    }
+  ],
+  "test": []
+}

@@ -1,0 +1,10 @@
+CREATE TABLE migrations_log (
+  id STRING(64) NOT NULL,
+  success BOOL NOT NULL,
+  appliedAt TIMESTAMP NOT NULL,
+  error STRING(4096),
+) PRIMARY KEY(id)
+CREATE TABLE test (
+  id INT64 NOT NULL,
+  createdAt TIMESTAMP NOT NULL,
+) PRIMARY KEY(id)
