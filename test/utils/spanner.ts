@@ -23,39 +23,19 @@ export async function assertSchema(db: Database, expectedSchema: string) {
 }
 
 export async function assertData(db: Database, expectedData: Record<string, any[]>) {
-  const toIgnore = [
-    'CHANGE_STREAM_OPTIONS',
-    'KEY_COLUMN_USAGE',
-    'CHANGE_STREAMS',
-    'COLUMNS',
-    'INDEX_COLUMNS',
-    'SCHEMATA',
-    'CONSTRAINT_COLUMN_USAGE',
-    'VIEWS',
-    'CONSTRAINT_TABLE_USAGE',
-    'SPANNER_STATISTICS',
-    'SUPPORTED_OPTIMIZER_VERSIONS',
-    'TABLES',
-    'INDEXES',
-    'COLUMN_OPTIONS',
-    'COLUMN_COLUMN_USAGE',
-    'CHANGE_STREAM_TABLES',
-    'CHANGE_STREAM_COLUMNS',
-    'CHECK_CONSTRAINTS',
-    'REFERENTIAL_CONSTRAINTS',
-    'TABLE_CONSTRAINTS',
-    'DATABASE_OPTIONS',
-  ];
-
   const [rows] = await db.run({
     sql: `SELECT t.table_name FROM information_schema.tables as t`,
     json: true,
   });
 
+  const isAllCapital = (str: string) => str === str.toUpperCase();
+
   const actualData: Record<string, any[]> = {};
   await Promise.all(
     rows
-      .filter(({ table_name }: Json) => !toIgnore.includes(table_name))
+      // internal spanner tables are always upper case, so ignoring them
+      // this is not 100% reliable, but good enough for the sake of testing
+      .filter(({ table_name }: Json) => !isAllCapital(table_name))
       .map(async ({ table_name }: Json) => {
         const select = table_name === 'migrations_log' ? 'id, success, error' : '*';
 
