@@ -69,12 +69,12 @@ function validateFileName(name: string): void {
 
 function isStatementSupportedByEmulator(statement: string): boolean {
   const notSupportedPatterns: RegExp[] = [
-    /^alter table [a-z][\d\w_]{0,128} add row deletion policy .+$/i,
-    /^create view/i,
-    /^create or replace view/i,
-    /^drop view/i,
-    /^create role/i,
-    /^drop role/i,
+    /^alter\s+table\s+[a-z][\d\w_]{0,128}\s+add\s+row\s+deletion\s+policy\s+.+$/i,
+    /^create\s+view/i,
+    /^create\s+or\s+replace\s+view/i,
+    /^drop\s+view/i,
+    /^create\s+role/i,
+    /^drop\s+role/i,
     /^grant/i,
     /^revoke/i,
   ];
