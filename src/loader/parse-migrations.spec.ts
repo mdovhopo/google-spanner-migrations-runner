@@ -159,7 +159,7 @@ describe('parseMigrations', () => {
           statements: [
             {
               disabledInEmulator: true,
-              str: 'alter table test add row deletion policy (older_than(createdAt, interval 30 day))',
+              str: 'alter table test\nadd row deletion policy (older_than(createdAt, interval 30 day))',
             },
           ],
         },
