@@ -58,11 +58,11 @@ function getStatementType(stm: Statement): StatementType {
   return ddlStatementsPatterns.some((regex) => regex.test(stm.str)) ? 'DDL' : 'DML';
 }
 
-const fileRegex = /^[0-9]{5}[a-z\-]{0,256}\.sql$/;
+const fileRegex = /^[0-9]{5}[a-z-]{0,256}\.sql$/;
 function validateFileName(name: string): void {
   if (!fileRegex.test(name)) {
     throw new Error(
-      `Migration file name must follow regex: ${fileRegex.toString()}. Examples: 00001-init.sql, 00004.sql`
+      `Migration file name must follow regex: ${fileRegex.toString()}. Examples: 00001-init.sql, 00004.sql`,
     );
   }
 }
@@ -108,7 +108,7 @@ function assertStatementsType(statements: Statement[]): void {
   const type = getStatementType(statements[0]);
   if (statements.some((stm) => getStatementType(stm) !== type)) {
     throw new Error(
-      `Single migration allows only one type of statements due to spanner SDK limitations. Available types - ${STATEMENT_TYPES}`
+      `Single migration allows only one type of statements due to spanner SDK limitations. Available types - ${STATEMENT_TYPES}`,
     );
   }
 }

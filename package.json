@@ -47,33 +47,37 @@
       "@commitlint/config-conventional"
     ]
   },
+  "peerDependencies": {
+    "@google-cloud/spanner": ">=6"
+  },
   "dependencies": {
-    "@google-cloud/spanner": "^6.4.0",
-    "chalk": "^4",
-    "commander": "^9.4.1",
-    "dotenv": "^16.0.3"
+    "chalk": "^5",
+    "commander": "^14.0.0",
+    "dotenv": "^17.2.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "14.1.0",
-    "@commitlint/config-conventional": "14.1.0",
-    "@types/jest": "^27.4.0",
-    "@types/node": "20.10.6",
-    "@typescript-eslint/eslint-plugin": "^5.3.1",
-    "@typescript-eslint/parser": "^5.3.1",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
-    "husky": "^7.0.4",
-    "jest": "^27.4.7",
-    "jest-config": "^27.4.7",
-    "lint-staged": "^12.1.7",
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
+    "@eslint/js": "^9.34.0",
+    "@google-cloud/spanner": "^8.2.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "24.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "husky": "^9.1.7",
+    "jest": "^30.1.1",
+    "jest-config": "^30.1.1",
+    "lint-staged": "^16.1.5",
     "multiline-str": "^1.0.4",
-    "prettier": "^2.5.1",
-    "rimraf": "^3.0.2",
-    "semantic-release": "^19.0.2",
-    "ts-jest": "^27.1.2",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.4"
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "semantic-release": "^24.2.7",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }
