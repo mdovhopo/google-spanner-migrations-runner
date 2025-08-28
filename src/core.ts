@@ -69,7 +69,7 @@ export class SpannerMigration {
     await this.db
       .createTable(
         `
-        CREATE TABLE ${this.migrationsTable} (
+        CREATE TABLE IF NOT EXISTS ${this.migrationsTable} (
           id          STRING(64) NOT NULL,
           success     BOOL NOT NULL,
           appliedAt   TIMESTAMP NOT NULL,
