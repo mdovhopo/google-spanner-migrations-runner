@@ -4,11 +4,7 @@ CREATE TABLE migrations_log (
   appliedAt TIMESTAMP NOT NULL,
   error STRING(4096),
 ) PRIMARY KEY(id)
-CREATE TABLE tasks (
+CREATE TABLE data (
   id STRING(36) NOT NULL,
-  tenant_id STRING(36) NOT NULL,
-  task_type STRING(255) NOT NULL,
-  status STRING(50) NOT NULL,
-  created_at TIMESTAMP NOT NULL,
   deduplication_key STRING(MAX),
 ) PRIMARY KEY(id)
