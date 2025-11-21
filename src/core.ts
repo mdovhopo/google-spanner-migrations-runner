@@ -96,9 +96,6 @@ export class SpannerMigration {
 
     const { success, errors, migrations } = parseMigrations(rawMigrations);
 
-    console.log('errors', errors);
-    console.log('migrations', migrations);
-
     if (!success) {
       this.logger.error(
         `Unable to parse some migrations.\nErrors:\n${errors?.map((err) => `\t${err}`)}`

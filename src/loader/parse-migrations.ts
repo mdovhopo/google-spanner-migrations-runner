@@ -21,7 +21,7 @@ const ddlStatementsPatterns: RegExp[] = [
 
   // index statements
   // CREATE [ UNIQUE ] [ NULL_FILTERED ] INDEX [ IF NOT EXISTS ] index_name
-  /^create\s{1,}(?:unique\s+|null_filtered\s+)?\s{0,}index/i,
+  /^create\s{1,}(?:unique\s+)?(?:null_filtered\s+)?\s{0,}index/i,
   /^alter\s+index/i,
   /^drop\s+index/i,
 
@@ -55,13 +55,7 @@ const ddlStatementsPatterns: RegExp[] = [
 ];
 
 function getStatementType(stm: Statement): StatementType {
-  console.log('stm', stm);
-  console.log('stm.str', stm.str);
-  return ddlStatementsPatterns.some((regex) => {
-    console.log('regex', regex);
-    console.log('regex.test(stm.str)', regex.test(stm.str));
-    return regex.test(stm.str)
-  }) ? 'DDL' : 'DML';
+  return ddlStatementsPatterns.some((regex) => regex.test(stm.str)) ? 'DDL' : 'DML';
 }
 
 const fileRegex = /^[0-9]{5}[a-z-]{0,256}\.sql$/;
@@ -83,7 +77,7 @@ function isStatementSupportedByEmulator(statement: string): boolean {
     /^drop\s+role/i,
     /^grant/i,
     /^revoke/i,
-    /^null_filtered/i,
+    /^create\s{1,}(?:unique\s+)?(?:null_filtered\s+)?\s{0,}index/i,
   ];
 
   return !notSupportedPatterns.some((regexp) => regexp.test(statement));
@@ -122,15 +116,10 @@ function assertStatementsType(statements: Statement[]): void {
 
 function parseMigration({ file, raw }: RawMigration): ParseResult {
   const migrationId = file.replace(/\.sql$/, '');
-  console.log('migrationId', migrationId);
-  console.log('raw', raw);
-  console.log('file', file);
   try {
     validateFileName(file);
 
     const statements = migrationToStatements(raw);
-
-    console.log('statements', statements);
 
     assertStatementsType(statements);
 

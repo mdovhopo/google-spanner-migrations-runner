@@ -12,4 +12,3 @@ CREATE TABLE tasks (
   created_at TIMESTAMP NOT NULL,
   deduplication_key STRING(MAX),
 ) PRIMARY KEY(id)
-CREATE UNIQUE INDEX unique_active_task ON tasks(tenant_id, task_type, deduplication_key)
