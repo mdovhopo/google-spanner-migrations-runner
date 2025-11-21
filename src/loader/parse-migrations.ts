@@ -77,6 +77,7 @@ function isStatementSupportedByEmulator(statement: string): boolean {
     /^drop\s+role/i,
     /^grant/i,
     /^revoke/i,
+    /^null_filtered/i,
   ];
 
   return !notSupportedPatterns.some((regexp) => regexp.test(statement));

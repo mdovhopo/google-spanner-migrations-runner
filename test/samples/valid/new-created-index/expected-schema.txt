@@ -1,0 +1,17 @@
+CREATE TABLE migrations_log (
+  id STRING(64) NOT NULL,
+  success BOOL NOT NULL,
+  appliedAt TIMESTAMP NOT NULL,
+  error STRING(4096),
+) PRIMARY KEY(id)
+CREATE TABLE tasks (
+  id STRING(36) NOT NULL,
+  tenant_id STRING(36) NOT NULL,
+  task_type STRING(255) NOT NULL,
+  status STRING(50) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  deduplication_key STRING(MAX),
+) PRIMARY KEY(id)
+CREATE UNIQUE NULL_FILTERED INDEX unique_active_task ON tasks(tenant_id, task_type, deduplication_key)
+
+
