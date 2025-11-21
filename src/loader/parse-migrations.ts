@@ -55,7 +55,13 @@ const ddlStatementsPatterns: RegExp[] = [
 ];
 
 function getStatementType(stm: Statement): StatementType {
-  return ddlStatementsPatterns.some((regex) => regex.test(stm.str)) ? 'DDL' : 'DML';
+  console.log('stm', stm);
+  console.log('stm.str', stm.str);
+  return ddlStatementsPatterns.some((regex) => {
+    console.log('regex', regex);
+    console.log('regex.test(stm.str)', regex.test(stm.str));
+    return regex.test(stm.str)
+  }) ? 'DDL' : 'DML';
 }
 
 const fileRegex = /^[0-9]{5}[a-z-]{0,256}\.sql$/;
@@ -116,11 +122,15 @@ function assertStatementsType(statements: Statement[]): void {
 
 function parseMigration({ file, raw }: RawMigration): ParseResult {
   const migrationId = file.replace(/\.sql$/, '');
-
+  console.log('migrationId', migrationId);
+  console.log('raw', raw);
+  console.log('file', file);
   try {
     validateFileName(file);
 
     const statements = migrationToStatements(raw);
+
+    console.log('statements', statements);
 
     assertStatementsType(statements);
 

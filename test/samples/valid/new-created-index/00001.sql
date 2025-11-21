@@ -8,7 +8,7 @@ CREATE TABLE tasks (
 
 ALTER TABLE tasks ADD COLUMN deduplication_key STRING(MAX);
 
-CREATE UNIQUE INDEX unique_active_task
+CREATE UNIQUE NULL_FILTERED INDEX unique_active_task
 ON tasks (tenant_id, task_type, deduplication_key);
 
 
