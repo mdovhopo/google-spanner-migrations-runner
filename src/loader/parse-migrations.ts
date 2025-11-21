@@ -21,7 +21,7 @@ const ddlStatementsPatterns: RegExp[] = [
 
   // index statements
   // CREATE [ UNIQUE ] [ NULL_FILTERED ] INDEX [ IF NOT EXISTS ] index_name
-  /^create\s{1,}(?:unique\s+|null_filtered\s+)?\s{0,}index/i,
+  /^create\s{1,}(?:unique\s+)?(?:null_filtered\s+)?\s{0,}index/i,
   /^alter\s+index/i,
   /^drop\s+index/i,
 
@@ -77,6 +77,7 @@ function isStatementSupportedByEmulator(statement: string): boolean {
     /^drop\s+role/i,
     /^grant/i,
     /^revoke/i,
+    /^create\s{1,}(?:unique\s+)?(?:null_filtered\s+)?\s{0,}index/i,
   ];
 
   return !notSupportedPatterns.some((regexp) => regexp.test(statement));
@@ -115,7 +116,6 @@ function assertStatementsType(statements: Statement[]): void {
 
 function parseMigration({ file, raw }: RawMigration): ParseResult {
   const migrationId = file.replace(/\.sql$/, '');
-
   try {
     validateFileName(file);
 

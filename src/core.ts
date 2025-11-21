@@ -134,13 +134,13 @@ export class SpannerMigration {
       if (type === 'DDL') {
         const allowedStatements = this.isEmulator
           ? /* on emulator some of the statements are not supported, so we need to ignore them... */
-            statements.filter(({ str, disabledInEmulator }) =>
-              disabledInEmulator
-                ? this.logger.warn(
-                    `Migration ${id} statement [${str}]: not supported on emulator. ignored.`
-                  )
-                : true
-            )
+          statements.filter(({ str, disabledInEmulator }) =>
+            disabledInEmulator
+              ? this.logger.warn(
+                `Migration ${id} statement [${str}]: not supported on emulator. ignored.`
+              )
+              : true
+          )
           : /* in cloud, run all statements */ statements;
         if (allowedStatements.length > 0) {
           allowedStatements.forEach(({ str }) => {

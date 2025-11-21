@@ -199,10 +199,7 @@ describe('parseMigrations', () => {
   for (const [root, expectedMigrations] of cases) {
     it(`should parse valid migrations from ${root} correctly`, () => {
       const files = loadMigrations(root);
-      console.log(files);
       const { migrations, success, errors } = parseMigrations(files);
-
-      console.log(migrations, errors);
 
       expect(errors).toEqual([]);
       expect(success).toBe(true);
