@@ -8,3 +8,4 @@ CREATE TABLE data (
   id STRING(36) NOT NULL,
   deduplication_key STRING(MAX),
 ) PRIMARY KEY(id)
+CREATE UNIQUE NULL_FILTERED INDEX unique_active_task ON data(id, deduplication_key)
