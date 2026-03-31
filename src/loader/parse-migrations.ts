@@ -25,6 +25,12 @@ const ddlStatementsPatterns: RegExp[] = [
   /^alter\s+index/i,
   /^drop\s+index/i,
 
+  // CREATE SEARCH INDEX [ IF NOT EXISTS ] index_name
+  /^create\s+search\s+index/i,
+  // ALTER SEARCH INDEX index_name ...
+  /^alter\s+search\s+index/i,
+  // DROP SEARCH INDEX [ IF EXISTS ] index_name
+  /^drop\s+search\s+index/i,
   // view statements
   /^create\s+view/i,
   /^create\s+or\s+replace\s+view/i,
