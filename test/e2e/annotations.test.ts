@@ -6,13 +6,13 @@ import fs from 'fs';
 import { SpannerMigration } from '../../src';
 import { assertData, assertSchema, recreateDatabase } from '../utils/spanner';
 
-describe('migration annotations', async () => {
+describe('migration annotations', () => {
   const spanner = new Spanner({
     projectId: process.env.SERVICE_PROJECT_ID!,
   });
   const samplesRoot = 'test/samples/annotations';
 
-  await it('only-in-env: applies when config.env matches', async () => {
+  it('only-in-env: applies when config.env matches', async () => {
     const caseName = 'only-in-env-match';
     const db = await recreateDatabase(spanner, process.env.SPANNER_INSTANCE_ID!, caseName);
 
@@ -42,7 +42,7 @@ describe('migration annotations', async () => {
     await assertData(db, expectedData);
   });
 
-  await it('only-in-env: skips and records when config.env mismatches', async () => {
+  it('only-in-env: skips and records when config.env mismatches', async () => {
     const caseName = 'only-in-env-mismatch';
     const db = await recreateDatabase(
       spanner,
@@ -76,7 +76,7 @@ describe('migration annotations', async () => {
     await assertData(db, expectedData);
   });
 
-  await it('only-in-env: skips when env is not passed', async () => {
+  it('only-in-env: skips when env is not passed', async () => {
     const caseName = 'only-in-env-mismatch';
     const db = await recreateDatabase(
       spanner,

@@ -240,7 +240,7 @@ describe('parseMigrations', () => {
         },
       ]);
       expect(success).toBe(false);
-      expect(errors?.[0]).toContain('unsupported migration annotation @unknown');
+      expect(errors?.[0]).toBe('00001.sql: unsupported migration annotation @unknown');
     });
   });
 });

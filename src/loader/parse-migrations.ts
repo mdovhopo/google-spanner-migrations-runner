@@ -114,7 +114,7 @@ function splitMigrationHeader(raw: string): { headerLines: string[]; sqlBody: st
   };
 }
 
-function parseHeaderAnnotations(headerLines: string[], file: string): MigrationAnnotation[] {
+function parseHeaderAnnotations(headerLines: string[]): MigrationAnnotation[] {
   const annotations: MigrationAnnotation[] = [];
   const seen = new Set<string>();
 
@@ -123,7 +123,9 @@ function parseHeaderAnnotations(headerLines: string[], file: string): MigrationA
     if (trimmed === '' || !trimmed.startsWith('--')) continue;
 
     if (/^--\s+@/.test(trimmed) && !ANNOTATION_LINE.test(trimmed)) {
-      throw new Error(`${file}: malformed migration annotation (expected: -- @name value): ${trimmed}`);
+      throw new Error(
+        `malformed migration annotation (expected: -- @name value): ${trimmed}`,
+      );
     }
 
     const m = trimmed.match(ANNOTATION_LINE);
@@ -132,10 +134,10 @@ function parseHeaderAnnotations(headerLines: string[], file: string): MigrationA
     const name = m[1];
     const value = m[2].trim();
     if (!ALLOWED_ANNOTATION_NAMES.has(name)) {
-      throw new Error(`${file}: unsupported migration annotation @${name}`);
+      throw new Error(`unsupported migration annotation @${name}`);
     }
     if (seen.has(name)) {
-      throw new Error(`${file}: duplicate migration annotation @${name}`);
+      throw new Error(`duplicate migration annotation @${name}`);
     }
     seen.add(name);
     annotations.push({ name, value });
@@ -181,7 +183,7 @@ function parseMigration({ file, raw }: RawMigration): ParseResult {
     validateFileName(file);
 
     const { headerLines, sqlBody } = splitMigrationHeader(raw);
-    const annotations = parseHeaderAnnotations(headerLines, file);
+    const annotations = parseHeaderAnnotations(headerLines);
     const statements = migrationToStatements(sqlBody);
 
     assertStatementsType(statements);
@@ -204,7 +206,7 @@ function parseMigration({ file, raw }: RawMigration): ParseResult {
     return {
       migration: { id: migrationId, type: 'DML', statements: [] },
       success: false,
-      error: `${file}: ${err.stack}`,
+      error: `${file}: ${err.message}`,
     };
   }
 }
