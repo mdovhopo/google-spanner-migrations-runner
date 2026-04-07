@@ -1,4 +1,5 @@
 import {
+  MigrationAnnotation,
   ParseResult,
   ParseTotalResult,
   RawMigration,
@@ -6,6 +7,12 @@ import {
   STATEMENT_TYPES,
   StatementType,
 } from '../types/types';
+
+/** Annotation names the parser accepts; unknown `@name` values are parse errors. */
+const ALLOWED_ANNOTATION_NAMES = new Set(['only-in-env']);
+
+/** Full-line `-- @name value` in the migration header (trimmed line). */
+const ANNOTATION_LINE = /^--\s+@([a-zA-Z][a-zA-Z0-9_-]*)\s+(.+)$/;
 
 // https://cloud.google.com/spanner/docs/reference/standard-sql/data-definition-language
 const ddlStatementsPatterns: RegExp[] = [
@@ -88,6 +95,55 @@ function isStatementSupportedByEmulator(statement: string): boolean {
   return !notSupportedPatterns.some((regexp) => regexp.test(statement));
 }
 
+/**
+ * Leading blank lines and full-line `--` comments before the first non-comment line are the header;
+ * the rest is SQL body (same `--` stripping rules as before apply only to the body).
+ */
+function splitMigrationHeader(raw: string): { headerLines: string[]; sqlBody: string } {
+  const lines = raw.split('\n');
+  let i = 0;
+  for (; i < lines.length; i++) {
+    const t = lines[i].trim();
+    if (t === '') continue;
+    if (t.startsWith('--')) continue;
+    break;
+  }
+  return {
+    headerLines: lines.slice(0, i),
+    sqlBody: lines.slice(i).join('\n'),
+  };
+}
+
+function parseHeaderAnnotations(headerLines: string[], file: string): MigrationAnnotation[] {
+  const annotations: MigrationAnnotation[] = [];
+  const seen = new Set<string>();
+
+  for (const line of headerLines) {
+    const trimmed = line.trim();
+    if (trimmed === '' || !trimmed.startsWith('--')) continue;
+
+    if (/^--\s+@/.test(trimmed) && !ANNOTATION_LINE.test(trimmed)) {
+      throw new Error(`${file}: malformed migration annotation (expected: -- @name value): ${trimmed}`);
+    }
+
+    const m = trimmed.match(ANNOTATION_LINE);
+    if (!m) continue;
+
+    const name = m[1];
+    const value = m[2].trim();
+    if (!ALLOWED_ANNOTATION_NAMES.has(name)) {
+      throw new Error(`${file}: unsupported migration annotation @${name}`);
+    }
+    if (seen.has(name)) {
+      throw new Error(`${file}: duplicate migration annotation @${name}`);
+    }
+    seen.add(name);
+    annotations.push({ name, value });
+  }
+
+  return annotations;
+}
+
 function migrationToStatements(raw: string): Statement[] {
   const statements = raw
     // clear comments first
@@ -124,16 +180,23 @@ function parseMigration({ file, raw }: RawMigration): ParseResult {
   try {
     validateFileName(file);
 
-    const statements = migrationToStatements(raw);
+    const { headerLines, sqlBody } = splitMigrationHeader(raw);
+    const annotations = parseHeaderAnnotations(headerLines, file);
+    const statements = migrationToStatements(sqlBody);
 
     assertStatementsType(statements);
 
+    const migration: ParseResult['migration'] = {
+      id: migrationId,
+      type: getStatementType(statements[0]), // type will be the same for all statements
+      statements: statements,
+    };
+    if (annotations.length > 0) {
+      migration.annotations = annotations;
+    }
+
     return {
-      migration: {
-        id: migrationId,
-        type: getStatementType(statements[0]), // type will be the same for all statements
-        statements: statements,
-      },
+      migration,
       success: true,
     };
   } catch (e) {
