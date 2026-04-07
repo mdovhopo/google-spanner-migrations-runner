@@ -8,12 +8,22 @@ export type RawMigration = {
   raw: string;
 };
 
+/** Parsed from full-line `-- @name value` migration header comments. */
+export type MigrationAnnotation = {
+  name: string;
+
+  value: string;
+};
+
 export type Migration = {
   id: string;
 
   type: StatementType;
 
   statements: Statement[];
+
+  /** Present only when the file declares header annotations; omit for backward compatibility. */
+  annotations?: MigrationAnnotation[];
 };
 
 export type ParseTotalResult = {
@@ -44,6 +54,9 @@ export type SpannerMigrationsConfig = {
   isEmulator?: boolean;
 
   projectId?: string;
+
+  /** Logical environment (e.g. staging, prod); used by `@only-in-env` migration annotations. */
+  env?: string;
 
   isSilent?: true;
 };

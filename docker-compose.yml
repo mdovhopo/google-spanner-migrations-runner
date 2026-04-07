@@ -3,5 +3,5 @@ services:
   spanner:
     image: gcr.io/cloud-spanner-emulator/emulator:latest
     ports:
-      - 9010:9010
-      - 9020:9020
+      - 9990:9010
+      - 9991:9020

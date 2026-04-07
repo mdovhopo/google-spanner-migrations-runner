@@ -1,5 +1,6 @@
 import { Database, Instance, Spanner, Transaction } from '@google-cloud/spanner';
 
+import { evaluateMigrationAnnotations } from './annotations/evaluate-migration-annotations';
 import { MIGRATIONS_LOG_TABLE, MIGRATIONS_ROOT_DIR } from './common/defaults';
 import { createLogger, Logger } from './common/logger';
 import { loadMigrations } from './loader/load-migrations';
@@ -116,7 +117,8 @@ export class SpannerMigration {
     });
   }
 
-  protected async applyMigration({ id, type, statements }: Migration): Promise<void> {
+  protected async applyMigration(migration: Migration): Promise<void> {
+    const { id, type, statements, annotations } = migration;
     const [applied] = await this.db.run({
       sql: `SELECT id from ${this.migrationsTable} where id = @id and success = true;`,
       params: { id },
@@ -125,6 +127,13 @@ export class SpannerMigration {
 
     if (applied.length !== 0) {
       this.logger.log(`Migration ${id} is already applied, skipping.`);
+      return;
+    }
+
+    const decision = evaluateMigrationAnnotations(annotations, this.config.env);
+    if (!decision.run) {
+      this.logger.log(`Migration ${id}: ${decision.skipMessage}`);
+      await this.saveMigrationResult(id, decision.skipMessage);
       return;
     }
 

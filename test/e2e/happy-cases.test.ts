@@ -1,6 +1,7 @@
+import { describe, it } from 'node:test';
+
 import { Spanner } from '@google-cloud/spanner';
 import fs from 'fs';
-import { describe, it } from 'node:test';
 
 import { SpannerMigration } from '../../src';
 import { assertData, assertSchema, recreateDatabase } from '../utils/spanner';
@@ -33,12 +34,12 @@ describe('happy cases', async () => {
 
       const expectedSchema = fs.readFileSync(
         `${testCasesRoot}/${testCase}/expected-schema.txt`,
-        'utf8'
+        'utf8',
       );
 
       await assertSchema(db, expectedSchema);
       const expectedData = JSON.parse(
-        fs.readFileSync(`${testCasesRoot}/${testCase}/expected-data.json`, 'utf8')
+        fs.readFileSync(`${testCasesRoot}/${testCase}/expected-data.json`, 'utf8'),
       );
       await assertData(db, expectedData);
     });

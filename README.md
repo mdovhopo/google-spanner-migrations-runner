@@ -58,6 +58,27 @@ Migrations will be applied in the same order as files in directory.
 
 Examples of valid and invalid migrations can be found [here](./test/samples)
 
+### Migration annotations (optional)
+
+At the top of a `.sql` file, before the first SQL statement, you may add full-line comments that declare **annotations**:
+
+- Only whole-line `-- ...` comments and blank lines are allowed in this header block.
+- An annotation line looks like: `-- @name value`.
+- Supported annotations:
+  - `-- @only-in-env <env>` — the migration runs only when the runner is invoked with matching `--env <env>` (or `env` in programmatic config). If the env does not match (or `--env` is omitted), the migration is **not** executed and a row is written to the migrations table with `success = false` and an explanatory `error` message.
+
+Example:
+
+```sql
+-- @only-in-env production
+
+CREATE TABLE my_table (
+  id INT64 NOT NULL,
+) PRIMARY KEY (id);
+```
+
+Migrations **without** annotations behave exactly as before.
+
 ### What happens if I run migration twice?
 
 Engine stores applied migrations in special table (managed automatically)
@@ -70,6 +91,9 @@ From shell
 ```sh
 # via npx
 npx google-spanner-migrations-runner --project-id --instance-id=test --database-id=test
+
+# optional: logical environment name for @only-in-env
+npx google-spanner-migrations-runner --project-id --instance-id=test --database-id=test --env production
 
 # or install globally
 npm i -g google-spanner-migrations-runner
@@ -92,6 +116,7 @@ import { SpannerMigration } from 'google-spanner-migrations-runner';
 async function run() {
   const config = {
     /* your config */
+    env: 'staging', // optional; required for migrations that use @only-in-env
   };
   const runner = new SpannerMigration(config);
 

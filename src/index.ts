@@ -4,6 +4,7 @@ export { loadMigrations } from './loader/load-migrations';
 export { parseMigrations } from './loader/parse-migrations';
 export {
   Migration,
+  MigrationAnnotation,
   ParseResult,
   ParseTotalResult,
   RawMigration,

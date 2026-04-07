@@ -40,6 +40,10 @@ export function getConfigFromCli(): SpannerMigrationsConfig {
       process.env.MIGRATIONS_LOG_TABLE || MIGRATIONS_LOG_TABLE
     )
     .option('-s, --is-silent', 'If specofied, no logs will be printed to stdout')
+    .option(
+      '-e, --env <name>',
+      'logical environment name (e.g. staging, prod); required for migrations that use @only-in-env'
+    )
     .parse(process.argv);
 
   return prog.opts<SpannerMigrationsConfig>();

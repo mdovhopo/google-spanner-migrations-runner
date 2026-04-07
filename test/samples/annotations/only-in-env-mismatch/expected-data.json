@@ -1,0 +1,9 @@
+{
+  "migrations_log": [
+    {
+      "id": "00001",
+      "success": false,
+      "error": "skipped: @only-in-env test-env (current env is wrong-env)"
+    }
+  ]
+}

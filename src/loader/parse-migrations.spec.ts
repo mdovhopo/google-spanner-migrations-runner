@@ -218,4 +218,29 @@ describe('parseMigrations', () => {
   //     expect(errors).toEqual([]);
   //   }
   // );
+
+  describe('header annotations', () => {
+    it('parses @only-in-env before SQL body', () => {
+      const { migrations, success, errors } = parseMigrations([
+        {
+          file: '00001.sql',
+          raw: `-- @only-in-env prod\n\nCREATE TABLE t ( id INT64 NOT NULL ) PRIMARY KEY (id);`,
+        },
+      ]);
+      expect(success).toBe(true);
+      expect(errors).toEqual([]);
+      expect(migrations[0].annotations).toEqual([{ name: 'only-in-env', value: 'prod' }]);
+    });
+
+    it('fails on unsupported annotation', () => {
+      const { success, errors } = parseMigrations([
+        {
+          file: '00001.sql',
+          raw: `-- @unknown val\nCREATE TABLE t ( id INT64 NOT NULL ) PRIMARY KEY (id);`,
+        },
+      ]);
+      expect(success).toBe(false);
+      expect(errors?.[0]).toBe('00001.sql: unsupported migration annotation @unknown');
+    });
+  });
 });
